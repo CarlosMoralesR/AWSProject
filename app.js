@@ -37,36 +37,59 @@ function validarTipoDeDato(req, res, next) {
 }
 
 // Alumnos
+// GET ALUMNOS
 app.get("/alumnos", (req, res) => {
   res.json(alumnos);
 });
 
+// GET ALUMNOS POR ID
 app.get("/alumnos/:id", (req, res) => {
   const alumno = alumnos.find((a) => a.id === req.params.id);
   if (!alumno) return res.status(404).json({ error: "Alumno no encontrado." });
   res.json(alumno);
 });
 
-app.post("/alumnos", validarCampos, validarTipoDeDato, (req, res) => {
-  const { nombres, apellidos, matricula, promedio } = req.body;
-  const id = generarIdUnico();
+// CREAR ALUMNOS
+app.post(
+  "/alumnos",
+  validarCampos,
+  validarMatriculaUnica,
+  validarTipoDeDato,
+  (req, res) => {
+    const { nombres, apellidos, matricula, promedio } = req.body;
+    const id = generarIdUnico();
 
-  if (!nombres || !apellidos || !matricula || !promedio) {
-    return res.status(400).json({ error: "Ningún campo puede estar vacío." });
+    if (alumnos.some((alumno) => alumno.matricula === matricula)) {
+      return res
+        .status(400)
+        .json({ error: "Ya existe un alumno con la misma matrícula." });
+    }
+
+    const alumno = {
+      id,
+      nombres,
+      apellidos,
+      matricula,
+      promedio: Number(promedio),
+    };
+
+    alumnos.push(alumno);
+    res.status(201).json(alumno);
   }
+);
 
-  const alumno = {
-    id,
-    nombres,
-    apellidos,
-    matricula,
-    promedio: Number(promedio),
-  };
+// Función para validar matrícula única
+function validarMatriculaUnica(req, res, next) {
+  const { matricula } = req.body;
+  if (alumnos.some((alumno) => alumno.matricula === matricula)) {
+    return res
+      .status(400)
+      .json({ error: "Ya existe un alumno con la misma matrícula." });
+  }
+  next();
+}
 
-  alumnos.push(alumno);
-  res.status(201).json(alumno);
-});
-
+// EDITAR ALUMNOS
 app.put("/alumnos/:id", validarTipoDeDato, (req, res) => {
   const index = alumnos.findIndex((a) => a.id === req.params.id);
   if (index === -1)
@@ -75,6 +98,7 @@ app.put("/alumnos/:id", validarTipoDeDato, (req, res) => {
   res.json(alumnos[index]);
 });
 
+// ELIMINAR ALUMNOS
 app.delete("/alumnos/:id", (req, res) => {
   const index = alumnos.findIndex((a) => a.id === req.params.id);
   if (index === -1)
@@ -84,10 +108,12 @@ app.delete("/alumnos/:id", (req, res) => {
 });
 
 // Profesores
+// GET PROFESORES
 app.get("/profesores", (req, res) => {
   res.json(profesores);
 });
 
+// GET PROFESORES POR ID
 app.get("/profesores/:id", (req, res) => {
   const profesor = profesores.find((p) => p.id === req.params.id);
   if (!profesor)
@@ -95,27 +121,51 @@ app.get("/profesores/:id", (req, res) => {
   res.json(profesor);
 });
 
-// POST /profesores
-app.post("/profesores", validarCampos, validarTipoDeDato, (req, res) => {
-  const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
-  const id = generarIdUnico();
+// CREAR PROFESORES
+app.post(
+  "/profesores",
+  validarCampos,
+  validarNumeroEmpleadoUnico,
+  validarTipoDeDato,
+  (req, res) => {
+    const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
+    const id = generarIdUnico();
 
-  if (!numeroEmpleado || !nombres || !apellidos || !horasClase) {
-    return res.status(400).json({ error: "Ningún campo puede estar vacío." });
+    if (
+      profesores.some((profesor) => profesor.numeroEmpleado === numeroEmpleado)
+    ) {
+      return res.status(400).json({
+        error: "Ya existe un profesor con el mismo número de empleado.",
+      });
+    }
+
+    const profesor = {
+      id,
+      numeroEmpleado,
+      nombres,
+      apellidos,
+      horasClase: Number(horasClase),
+    };
+
+    profesores.push(profesor);
+    res.status(201).json(profesor);
   }
+);
 
-  const profesor = {
-    id,
-    numeroEmpleado,
-    nombres,
-    apellidos,
-    horasClase: Number(horasClase),
-  };
+// Función para validar número de empleado único
+function validarNumeroEmpleadoUnico(req, res, next) {
+  const { numeroEmpleado } = req.body;
+  if (
+    profesores.some((profesor) => profesor.numeroEmpleado === numeroEmpleado)
+  ) {
+    return res.status(400).json({
+      error: "Ya existe un profesor con el mismo número de empleado.",
+    });
+  }
+  next();
+}
 
-  profesores.push(profesor);
-  res.status(201).json(profesor);
-});
-
+// EDITAR PROFESORES
 app.put("/profesores/:id", validarTipoDeDato, (req, res) => {
   const index = profesores.findIndex((p) => p.id === req.params.id);
   if (index === -1)
@@ -124,6 +174,7 @@ app.put("/profesores/:id", validarTipoDeDato, (req, res) => {
   res.json(profesores[index]);
 });
 
+// ELIMINAR PROFESORES
 app.delete("/profesores/:id", (req, res) => {
   const index = profesores.findIndex((p) => p.id === req.params.id);
   if (index === -1)
@@ -132,6 +183,7 @@ app.delete("/profesores/:id", (req, res) => {
   res.sendStatus(200);
 });
 
+// INICIACIÓN DE SERVIDOR
 const port = 3000;
 app.listen(port, () => {
   console.log(`Servidor iniciado en http://localhost:${port}`);
