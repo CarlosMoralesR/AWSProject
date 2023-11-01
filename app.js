@@ -50,6 +50,11 @@ app.get("/alumnos/:id", (req, res) => {
 app.post("/alumnos", validarCampos, validarTipoDeDato, (req, res) => {
   const { nombres, apellidos, matricula, promedio } = req.body;
   const id = generarIdUnico();
+
+  if (!nombres || !apellidos || !matricula || !promedio) {
+    return res.status(400).json({ error: "Ningún campo puede estar vacío." });
+  }
+
   const alumno = {
     id,
     nombres,
@@ -57,6 +62,7 @@ app.post("/alumnos", validarCampos, validarTipoDeDato, (req, res) => {
     matricula,
     promedio: Number(promedio),
   };
+
   alumnos.push(alumno);
   res.status(201).json(alumno);
 });
@@ -89,9 +95,15 @@ app.get("/profesores/:id", (req, res) => {
   res.json(profesor);
 });
 
+// POST /profesores
 app.post("/profesores", validarCampos, validarTipoDeDato, (req, res) => {
   const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
   const id = generarIdUnico();
+
+  if (!numeroEmpleado || !nombres || !apellidos || !horasClase) {
+    return res.status(400).json({ error: "Ningún campo puede estar vacío." });
+  }
+
   const profesor = {
     id,
     numeroEmpleado,
@@ -99,6 +111,7 @@ app.post("/profesores", validarCampos, validarTipoDeDato, (req, res) => {
     apellidos,
     horasClase: Number(horasClase),
   };
+
   profesores.push(profesor);
   res.status(201).json(profesor);
 });
