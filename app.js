@@ -184,7 +184,12 @@ app.delete("/profesores/:id", (req, res) => {
 });
 
 // INICIACIÓN DE SERVIDOR
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Servidor iniciado en http://localhost:${port}`);
+const PORT = 3000;
+
+app.get("/", (req, res) => {
+  res.send("¡Hola desde Express!");
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor iniciado en http://0.0.0.0:${PORT}`);
 });
