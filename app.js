@@ -39,7 +39,11 @@ function validarTipoDeDato(req, res, next) {
 // Alumnos
 // GET ALUMNOS
 app.get("/alumnos", (req, res) => {
-  res.json(alumnos);
+  if (alumnos.length === 0) {
+    res.status(200).json({ status: 200, message: "OK", data: [] });
+  } else {
+    res.json(alumnos);
+  }
 });
 
 // GET ALUMNOS POR ID
@@ -110,7 +114,11 @@ app.delete("/alumnos/:id", (req, res) => {
 // Profesores
 // GET PROFESORES
 app.get("/profesores", (req, res) => {
-  res.json(profesores);
+  if (profesores.length === 0) {
+    res.status(200).json({ status: 200, message: "OK", data: [] });
+  } else {
+    res.json(profesores);
+  }
 });
 
 // GET PROFESORES POR ID
@@ -187,7 +195,7 @@ app.delete("/profesores/:id", (req, res) => {
 const PORT = 3000;
 
 app.get("/", (req, res) => {
-  res.send("¡Hola desde Express!");
+  res.send("¡Bienvenido a la aplicación!");
 });
 
 app.listen(PORT, "0.0.0.0", () => {
