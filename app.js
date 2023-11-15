@@ -191,6 +191,6 @@ app.get("/", (req, res) => {
   res.send("¡Bienvenido a la aplicación!");
 });
 
-app.listen(PORT, "127.0.0.1", () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor iniciado en http://127.0.0.1:${PORT}`);
 });
