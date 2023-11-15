@@ -6,11 +6,6 @@ app.use(express.json());
 const alumnos = [];
 const profesores = [];
 
-// Función para generar un ID único
-const generarIdUnico = () => {
-  return Math.random().toString(36).substr(2, 9);
-};
-
 // Validación de campos
 function validarCampos(req, res, next) {
   const { nombres, apellidos } = req.body;
@@ -39,16 +34,12 @@ function validarTipoDeDato(req, res, next) {
 // Alumnos
 // GET ALUMNOS
 app.get("/alumnos", (req, res) => {
-  if (alumnos.length === 0) {
-    res.status(200).json({ status: 200, message: "OK", data: [] });
-  } else {
-    res.json(alumnos);
-  }
+  res.status(200).json(alumnos);
 });
 
 // GET ALUMNOS POR ID
 app.get("/alumnos/:id", (req, res) => {
-  const alumno = alumnos.find((a) => a.id === req.params.id);
+  const alumno = alumnos.find((a) => a.id == req.params.id);
   if (!alumno) return res.status(404).json({ error: "Alumno no encontrado." });
   res.json(alumno);
 });
@@ -60,8 +51,7 @@ app.post(
   validarMatriculaUnica,
   validarTipoDeDato,
   (req, res) => {
-    const { nombres, apellidos, matricula, promedio } = req.body;
-    const id = generarIdUnico();
+    const { id, nombres, apellidos, matricula, promedio } = req.body;
 
     if (alumnos.some((alumno) => alumno.matricula === matricula)) {
       return res
@@ -94,8 +84,8 @@ function validarMatriculaUnica(req, res, next) {
 }
 
 // EDITAR ALUMNOS
-app.put("/alumnos/:id", validarTipoDeDato, (req, res) => {
-  const index = alumnos.findIndex((a) => a.id === req.params.id);
+app.put("/alumnos/:id", validarCampos, validarTipoDeDato, (req, res) => {
+  const index = alumnos.findIndex((a) => a.id == req.params.id);
   if (index === -1)
     return res.status(404).json({ error: "Alumno no encontrado." });
   alumnos[index] = { ...alumnos[index], ...req.body };
@@ -104,26 +94,26 @@ app.put("/alumnos/:id", validarTipoDeDato, (req, res) => {
 
 // ELIMINAR ALUMNOS
 app.delete("/alumnos/:id", (req, res) => {
-  const index = alumnos.findIndex((a) => a.id === req.params.id);
+  const index = alumnos.findIndex((a) => a.id == req.params.id);
   if (index === -1)
     return res.status(404).json({ error: "Alumno no encontrado." });
   alumnos.splice(index, 1);
   res.sendStatus(200);
 });
 
+app.all("/alumnos", (req, res) => {
+  res.status(405).send("Method Not Allowed");
+});
+
 // Profesores
 // GET PROFESORES
 app.get("/profesores", (req, res) => {
-  if (profesores.length === 0) {
-    res.status(200).json({ status: 200, message: "OK", data: [] });
-  } else {
-    res.json(profesores);
-  }
+  res.status(200).json(profesores);
 });
 
 // GET PROFESORES POR ID
 app.get("/profesores/:id", (req, res) => {
-  const profesor = profesores.find((p) => p.id === req.params.id);
+  const profesor = profesores.find((p) => p.id == req.params.id);
   if (!profesor)
     return res.status(404).json({ error: "Profesor no encontrado." });
   res.json(profesor);
@@ -136,8 +126,7 @@ app.post(
   validarNumeroEmpleadoUnico,
   validarTipoDeDato,
   (req, res) => {
-    const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
-    const id = generarIdUnico();
+    const { id, numeroEmpleado, nombres, apellidos, horasClase } = req.body;
 
     if (
       profesores.some((profesor) => profesor.numeroEmpleado === numeroEmpleado)
@@ -174,8 +163,8 @@ function validarNumeroEmpleadoUnico(req, res, next) {
 }
 
 // EDITAR PROFESORES
-app.put("/profesores/:id", validarTipoDeDato, (req, res) => {
-  const index = profesores.findIndex((p) => p.id === req.params.id);
+app.put("/profesores/:id", validarCampos, validarTipoDeDato, (req, res) => {
+  const index = profesores.findIndex((p) => p.id == req.params.id);
   if (index === -1)
     return res.status(404).json({ error: "Profesor no encontrado." });
   profesores[index] = { ...profesores[index], ...req.body };
@@ -184,20 +173,24 @@ app.put("/profesores/:id", validarTipoDeDato, (req, res) => {
 
 // ELIMINAR PROFESORES
 app.delete("/profesores/:id", (req, res) => {
-  const index = profesores.findIndex((p) => p.id === req.params.id);
+  const index = profesores.findIndex((p) => p.id == req.params.id);
   if (index === -1)
     return res.status(404).json({ error: "Profesor no encontrado." });
   profesores.splice(index, 1);
   res.sendStatus(200);
 });
 
+app.all("/profesores", (req, res) => {
+  res.status(405).send("Method Not Allowed");
+});
+
 // INICIACIÓN DE SERVIDOR
-const PORT = 3000;
+const PORT = 8000;
 
 app.get("/", (req, res) => {
   res.send("¡Bienvenido a la aplicación!");
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Servidor iniciado en http://0.0.0.0:${PORT}`);
+app.listen(PORT, "127.0.0.1", () => {
+  console.log(`Servidor iniciado en http://127.0.0.1:${PORT}`);
 });
