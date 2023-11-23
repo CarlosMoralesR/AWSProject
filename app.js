@@ -177,31 +177,32 @@ function validarNumeroEmpleadoUnico(req, res, next) {
 }
 
 // EDITAR PROFESORES
-app.put(
-  "/profesores/:id",
-  validarCampos,
-  validarTipoDeDato,
-  async (req, res) => {
-    const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
-    const id = parseInt(req.params.id);
+app.put("/profesores/:id", validarTipoDeDato, async (req, res) => {
+  const id = parseInt(req.params.id);
 
-    try {
-      const profesor = await prisma.profesor.update({
-        where: { id },
-        data: {
-          numeroEmpleado,
-          nombres,
-          apellidos,
-          horasClase: Number(horasClase),
-        },
-      });
-      res.json(profesor);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error al actualizar el profesor." });
-    }
+  try {
+    // Obtén los campos que se enviaron en la solicitud
+    const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
+
+    // Construye el objeto data solo con los campos que se enviaron
+    const data = {};
+    if (numeroEmpleado !== undefined) data.numeroEmpleado = numeroEmpleado;
+    if (nombres !== undefined) data.nombres = nombres;
+    if (apellidos !== undefined) data.apellidos = apellidos;
+    if (horasClase !== undefined) data.horasClase = Number(horasClase);
+
+    // Actualiza el alumno solo con los campos proporcionados
+    const profesor = await prisma.profesor.update({
+      where: { id },
+      data,
+    });
+
+    res.json(profesor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al actualizar el profesor." });
   }
-);
+});
 
 // ELIMINAR PROFESORES
 app.delete("/profesores/:id", async (req, res) => {
