@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 app.use(express.json());
-
-const alumnos = [];
-const profesores = [];
 
 // Validación de campos
 function validarCampos(req, res, next) {
@@ -33,44 +32,41 @@ function validarTipoDeDato(req, res, next) {
 
 // Alumnos
 // GET ALUMNOS
-app.get("/alumnos", (req, res) => {
+app.get("/alumnos", async (req, res) => {
+  const alumnos = await prisma.alumno.findMany();
   res.status(200).json(alumnos);
 });
 
 // GET ALUMNOS POR ID
-app.get("/alumnos/:id", (req, res) => {
-  const alumno = alumnos.find((a) => a.id == req.params.id);
+app.get("/alumnos/:id", async (req, res) => {
+  const alumno = await prisma.alumno.findUnique({
+    where: { id: parseInt(req.params.id) },
+  });
   if (!alumno) return res.status(404).json({ error: "Alumno no encontrado." });
   res.json(alumno);
 });
 
 // CREAR ALUMNOS
-app.post(
-  "/alumnos",
-  validarCampos,
-  validarMatriculaUnica,
-  validarTipoDeDato,
-  (req, res) => {
-    const { id, nombres, apellidos, matricula, promedio } = req.body;
+app.post("/alumnos", validarCampos, async (req, res) => {
+  const { nombres, apellidos, matricula, promedio, password } = req.body;
 
-    if (alumnos.some((alumno) => alumno.matricula === matricula)) {
-      return res
-        .status(400)
-        .json({ error: "Ya existe un alumno con la misma matrícula." });
-    }
-
-    const alumno = {
-      id,
-      nombres,
-      apellidos,
-      matricula,
-      promedio: Number(promedio),
-    };
-
-    alumnos.push(alumno);
+  try {
+    const alumno = await prisma.alumno.create({
+      data: {
+        nombres,
+        apellidos,
+        matricula,
+        promedio: Number(promedio),
+        fotoPerfilUrl: "",
+        password,
+      },
+    });
     res.status(201).json(alumno);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al crear el alumno." });
   }
-);
+});
 
 // Función para validar matrícula única
 function validarMatriculaUnica(req, res, next) {
@@ -84,21 +80,46 @@ function validarMatriculaUnica(req, res, next) {
 }
 
 // EDITAR ALUMNOS
-app.put("/alumnos/:id", validarCampos, validarTipoDeDato, (req, res) => {
-  const index = alumnos.findIndex((a) => a.id == req.params.id);
-  if (index === -1)
-    return res.status(404).json({ error: "Alumno no encontrado." });
-  alumnos[index] = { ...alumnos[index], ...req.body };
-  res.json(alumnos[index]);
+app.put("/alumnos/:id", validarTipoDeDato, async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+    // Obtén los campos que se enviaron en la solicitud
+    const { nombres, apellidos, matricula, promedio } = req.body;
+
+    // Construye el objeto data solo con los campos que se enviaron
+    const data = {};
+    if (nombres !== undefined) data.nombres = nombres;
+    if (apellidos !== undefined) data.apellidos = apellidos;
+    if (matricula !== undefined) data.matricula = matricula;
+    if (promedio !== undefined) data.promedio = Number(promedio);
+
+    // Actualiza el alumno solo con los campos proporcionados
+    const alumno = await prisma.alumno.update({
+      where: { id },
+      data,
+    });
+
+    res.json(alumno);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al actualizar el alumno." });
+  }
 });
 
 // ELIMINAR ALUMNOS
-app.delete("/alumnos/:id", (req, res) => {
-  const index = alumnos.findIndex((a) => a.id == req.params.id);
-  if (index === -1)
-    return res.status(404).json({ error: "Alumno no encontrado." });
-  alumnos.splice(index, 1);
-  res.sendStatus(200);
+app.delete("/alumnos/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+    await prisma.alumno.delete({
+      where: { id },
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar el alumno." });
+  }
 });
 
 app.all("/alumnos", (req, res) => {
@@ -107,47 +128,40 @@ app.all("/alumnos", (req, res) => {
 
 // Profesores
 // GET PROFESORES
-app.get("/profesores", (req, res) => {
+app.get("/profesores", async (req, res) => {
+  const profesores = await prisma.profesor.findMany();
   res.status(200).json(profesores);
 });
 
 // GET PROFESORES POR ID
-app.get("/profesores/:id", (req, res) => {
-  const profesor = profesores.find((p) => p.id == req.params.id);
+app.get("/profesores/:id", async (req, res) => {
+  const profesor = await prisma.profesor.findUnique({
+    where: { id: parseInt(req.params.id) },
+  });
   if (!profesor)
     return res.status(404).json({ error: "Profesor no encontrado." });
   res.json(profesor);
 });
 
 // CREAR PROFESORES
-app.post(
-  "/profesores",
-  validarCampos,
-  validarNumeroEmpleadoUnico,
-  validarTipoDeDato,
-  (req, res) => {
-    const { id, numeroEmpleado, nombres, apellidos, horasClase } = req.body;
+app.post("/profesores", validarCampos, async (req, res) => {
+  const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
 
-    if (
-      profesores.some((profesor) => profesor.numeroEmpleado === numeroEmpleado)
-    ) {
-      return res.status(400).json({
-        error: "Ya existe un profesor con el mismo número de empleado.",
-      });
-    }
-
-    const profesor = {
-      id,
-      numeroEmpleado,
-      nombres,
-      apellidos,
-      horasClase: Number(horasClase),
-    };
-
-    profesores.push(profesor);
+  try {
+    const profesor = await prisma.profesor.create({
+      data: {
+        numeroEmpleado,
+        nombres,
+        apellidos,
+        horasClase: Number(horasClase),
+      },
+    });
     res.status(201).json(profesor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al crear el profesor." });
   }
-);
+});
 
 // Función para validar número de empleado único
 function validarNumeroEmpleadoUnico(req, res, next) {
@@ -163,25 +177,53 @@ function validarNumeroEmpleadoUnico(req, res, next) {
 }
 
 // EDITAR PROFESORES
-app.put("/profesores/:id", validarCampos, validarTipoDeDato, (req, res) => {
-  const index = profesores.findIndex((p) => p.id == req.params.id);
-  if (index === -1)
-    return res.status(404).json({ error: "Profesor no encontrado." });
-  profesores[index] = { ...profesores[index], ...req.body };
-  res.json(profesores[index]);
-});
+app.put(
+  "/profesores/:id",
+  validarCampos,
+  validarTipoDeDato,
+  async (req, res) => {
+    const { numeroEmpleado, nombres, apellidos, horasClase } = req.body;
+    const id = parseInt(req.params.id);
+
+    try {
+      const profesor = await prisma.profesor.update({
+        where: { id },
+        data: {
+          numeroEmpleado,
+          nombres,
+          apellidos,
+          horasClase: Number(horasClase),
+        },
+      });
+      res.json(profesor);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error al actualizar el profesor." });
+    }
+  }
+);
 
 // ELIMINAR PROFESORES
-app.delete("/profesores/:id", (req, res) => {
-  const index = profesores.findIndex((p) => p.id == req.params.id);
-  if (index === -1)
-    return res.status(404).json({ error: "Profesor no encontrado." });
-  profesores.splice(index, 1);
-  res.sendStatus(200);
+app.delete("/profesores/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+    await prisma.profesor.delete({
+      where: { id },
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar el profesor." });
+  }
 });
 
 app.all("/profesores", (req, res) => {
   res.status(405).send("Method Not Allowed");
+});
+
+app.on("close", () => {
+  prisma.$disconnect();
 });
 
 // INICIACIÓN DE SERVIDOR
