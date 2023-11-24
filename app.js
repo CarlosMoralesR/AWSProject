@@ -12,20 +12,20 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 
 aws.config.update({
-  accessKeyId: "ASIAU3SHNCDUMRJVCAR3",
-  secretAccessKey: "zeKYaAzVrp3nGjjgGS4f4hyCUk7vL1GEwK2Sukn2",
+  accessKeyId: "ASIAU3SHNCDUAAOJVLV2",
+  secretAccessKey: "Mq3E1c3LqQP80LI8y3jzgrBimywKmum4gVxNUXWg",
   sessionToken:
-    "FwoGZXIvYXdzEAoaDI/+iMszvAJhrxo+3CLPAaSYYbxDan6EPa45FG3DhnOTmQ3Xydzuv+k33DMvn0wZvMkohXQOjxHP+KbQE0op8lUYXsgUXTLF78AbwyozT3UDsA9Nsk2Bj/XKobM1iwXVZCqILDjdgfZFIoUT17UURisK5ETP+VOQvNR+jjo6xJz9X52Fmb9MY6C5IO5eGOte1fDeTNC8HXW/gb8c2Hs3l5Jlm9W3UOR0Ap/EPyZqTfLxFP0O/t7dgvpO7DIA7W/7sAfrNh4sBwSUfjwGn1AgRryHjmsfhNnYQCslRprwaSi+1f+qBjItEXoxlBIs47S84iITqr15hQcg06Eq34FryIJB5xlDIyvVwsEBHokWMxofOx9e",
+    "FwoGZXIvYXdzEA4aDLyCWZqBulP9QVv4lCLPAQea1XrIAebAsLvrsBx9RsJaQrGrq+1sVpyqF3vEjI/cutI4wuB9OnYu31LfWzGM1tauqc72aw/EguB5gr9lZG9PrBdvbZEGlrEN4kdQaUE6U3XqJo+J2qq1RwTGpYdPXy52kWmILeuPhHM/c7WJWSO6jTBBL3AvUasxFdpMvk+GJS9cpAmgpsvmiaqRsH2TyDWieHEX9kpMkNGAA37j2xFdmgyFGLQEglJAZZAfCj3RE0KLhowlxL53bwPu0KwzdzeRCyo/wGjH8ek+VZC5LiiVxoCrBjItnfgsA9kqrI0zNLcMGeoDTiw2E1IQzz65tRQltIbgTgEdC8m8htOsuTOUY83J",
   region: "us-east-1",
 });
 
 const s3 = new S3Client({
   region: "us-east-1",
   credentials: {
-    accessKeyId: "ASIAU3SHNCDUMRJVCAR3",
-    secretAccessKey: "zeKYaAzVrp3nGjjgGS4f4hyCUk7vL1GEwK2Sukn2",
+    accessKeyId: "ASIAU3SHNCDUAAOJVLV2",
+    secretAccessKey: "Mq3E1c3LqQP80LI8y3jzgrBimywKmum4gVxNUXWg",
     sessionToken:
-      "FwoGZXIvYXdzEAoaDI/+iMszvAJhrxo+3CLPAaSYYbxDan6EPa45FG3DhnOTmQ3Xydzuv+k33DMvn0wZvMkohXQOjxHP+KbQE0op8lUYXsgUXTLF78AbwyozT3UDsA9Nsk2Bj/XKobM1iwXVZCqILDjdgfZFIoUT17UURisK5ETP+VOQvNR+jjo6xJz9X52Fmb9MY6C5IO5eGOte1fDeTNC8HXW/gb8c2Hs3l5Jlm9W3UOR0Ap/EPyZqTfLxFP0O/t7dgvpO7DIA7W/7sAfrNh4sBwSUfjwGn1AgRryHjmsfhNnYQCslRprwaSi+1f+qBjItEXoxlBIs47S84iITqr15hQcg06Eq34FryIJB5xlDIyvVwsEBHokWMxofOx9e",
+      "FwoGZXIvYXdzEA4aDLyCWZqBulP9QVv4lCLPAQea1XrIAebAsLvrsBx9RsJaQrGrq+1sVpyqF3vEjI/cutI4wuB9OnYu31LfWzGM1tauqc72aw/EguB5gr9lZG9PrBdvbZEGlrEN4kdQaUE6U3XqJo+J2qq1RwTGpYdPXy52kWmILeuPhHM/c7WJWSO6jTBBL3AvUasxFdpMvk+GJS9cpAmgpsvmiaqRsH2TyDWieHEX9kpMkNGAA37j2xFdmgyFGLQEglJAZZAfCj3RE0KLhowlxL53bwPu0KwzdzeRCyo/wGjH8ek+VZC5LiiVxoCrBjItnfgsA9kqrI0zNLcMGeoDTiw2E1IQzz65tRQltIbgTgEdC8m8htOsuTOUY83J",
   },
 });
 
@@ -188,19 +188,8 @@ app.post("/alumnos/:id/email", async (req, res) => {
   }
 });
 
-// Función para validar matrícula única
-function validarMatriculaUnica(req, res, next) {
-  const { matricula } = req.body;
-  if (alumnos.some((alumno) => alumno.matricula === matricula)) {
-    return res
-      .status(400)
-      .json({ error: "Ya existe un alumno con la misma matrícula." });
-  }
-  next();
-}
-
 // EDITAR ALUMNOS
-app.put("/alumnos/:id", validarTipoDeDato, async (req, res) => {
+app.put("/alumnos/:id", async (req, res) => {
   const id = parseInt(req.params.id);
 
   // Verificar si el alumno existe antes de intentar editarlo

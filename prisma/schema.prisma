@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://main:12345678@aws-project-database.c25svdx5xwfo.us-east-1.rds.amazonaws.com:5432/projectdb"
+  url      = env("DATABASE_URL")
 }
 
 model Alumno {
