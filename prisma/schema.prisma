@@ -22,7 +22,7 @@ model Alumno {
 
 model Profesor {
   id        Int     @id @default(autoincrement())
-  numeroEmpleado String  @unique
+  numeroEmpleado Int  @unique
   nombres  String
   apellidos String
   horasClase Int
