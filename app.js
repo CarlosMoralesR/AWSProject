@@ -12,20 +12,20 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 
 aws.config.update({
-  accessKeyId: "ASIAU3SHNCDUAAOJVLV2",
-  secretAccessKey: "Mq3E1c3LqQP80LI8y3jzgrBimywKmum4gVxNUXWg",
+  accessKeyId: "ASIAU3SHNCDUDI4V3CQ2",
+  secretAccessKey: "58Lmw79MhG5xl9SMoD5AXGjiAkCMWF+iQ2qGEsvo",
   sessionToken:
-    "FwoGZXIvYXdzEA4aDLyCWZqBulP9QVv4lCLPAQea1XrIAebAsLvrsBx9RsJaQrGrq+1sVpyqF3vEjI/cutI4wuB9OnYu31LfWzGM1tauqc72aw/EguB5gr9lZG9PrBdvbZEGlrEN4kdQaUE6U3XqJo+J2qq1RwTGpYdPXy52kWmILeuPhHM/c7WJWSO6jTBBL3AvUasxFdpMvk+GJS9cpAmgpsvmiaqRsH2TyDWieHEX9kpMkNGAA37j2xFdmgyFGLQEglJAZZAfCj3RE0KLhowlxL53bwPu0KwzdzeRCyo/wGjH8ek+VZC5LiiVxoCrBjItnfgsA9kqrI0zNLcMGeoDTiw2E1IQzz65tRQltIbgTgEdC8m8htOsuTOUY83J",
+    "FwoGZXIvYXdzEIT//////////wEaDOEsOS4AuezxguNZNyLPAfalTuyoJKZCPjAP5qota/iRUS45i11mwqm2Dyv76XUetfrlxhT/8kRxJZoQ2Dzfm0btC+zqRaX/Wqoma0+hn8j/77DDy2ftYMVDaAYjRXyFKB7ZN182ME1cXSMU6RhOcP9sGu3uRhy+OXIQeEhcF0fEQmhdrItyavlhSvYbQ3WRwjSRQ+Zy1XVNpS87ouyZCAWwpZQKIxZMct+6REsp4rDCQwlJbV++d1bsxiUDuk/LZcBdx0GztS8zymdqLr3ri3EtyX1puZ7W89caGo2uqSjFupqrBjItThSNjLjT1Ulm/Yi8toVfr5EIZ3OqhykJiPNoZsXwdSA4Iqxia2w8ittF4493",
   region: "us-east-1",
 });
 
 const s3 = new S3Client({
   region: "us-east-1",
   credentials: {
-    accessKeyId: "ASIAU3SHNCDUAAOJVLV2",
-    secretAccessKey: "Mq3E1c3LqQP80LI8y3jzgrBimywKmum4gVxNUXWg",
+    accessKeyId: "ASIAU3SHNCDUDI4V3CQ2",
+    secretAccessKey: "58Lmw79MhG5xl9SMoD5AXGjiAkCMWF+iQ2qGEsvo",
     sessionToken:
-      "FwoGZXIvYXdzEA4aDLyCWZqBulP9QVv4lCLPAQea1XrIAebAsLvrsBx9RsJaQrGrq+1sVpyqF3vEjI/cutI4wuB9OnYu31LfWzGM1tauqc72aw/EguB5gr9lZG9PrBdvbZEGlrEN4kdQaUE6U3XqJo+J2qq1RwTGpYdPXy52kWmILeuPhHM/c7WJWSO6jTBBL3AvUasxFdpMvk+GJS9cpAmgpsvmiaqRsH2TyDWieHEX9kpMkNGAA37j2xFdmgyFGLQEglJAZZAfCj3RE0KLhowlxL53bwPu0KwzdzeRCyo/wGjH8ek+VZC5LiiVxoCrBjItnfgsA9kqrI0zNLcMGeoDTiw2E1IQzz65tRQltIbgTgEdC8m8htOsuTOUY83J",
+      "FwoGZXIvYXdzEIT//////////wEaDOEsOS4AuezxguNZNyLPAfalTuyoJKZCPjAP5qota/iRUS45i11mwqm2Dyv76XUetfrlxhT/8kRxJZoQ2Dzfm0btC+zqRaX/Wqoma0+hn8j/77DDy2ftYMVDaAYjRXyFKB7ZN182ME1cXSMU6RhOcP9sGu3uRhy+OXIQeEhcF0fEQmhdrItyavlhSvYbQ3WRwjSRQ+Zy1XVNpS87ouyZCAWwpZQKIxZMct+6REsp4rDCQwlJbV++d1bsxiUDuk/LZcBdx0GztS8zymdqLr3ri3EtyX1puZ7W89caGo2uqSjFupqrBjItThSNjLjT1Ulm/Yi8toVfr5EIZ3OqhykJiPNoZsXwdSA4Iqxia2w8ittF4493",
   },
 });
 
@@ -144,8 +144,6 @@ app.post("/alumnos/:id/fotoPerfil", upload.single("foto"), async (req, res) => {
     });
 
     res.json(alumno);
-    console.log(alumno);
-    console.log(fotoPerfilUrl);
   } catch (error) {
     console.error(error);
     res
