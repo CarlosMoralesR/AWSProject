@@ -12,20 +12,20 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 
 aws.config.update({
-  accessKeyId: "ASIAU3SHNCDUDI4V3CQ2",
-  secretAccessKey: "58Lmw79MhG5xl9SMoD5AXGjiAkCMWF+iQ2qGEsvo",
+  accessKeyId: "ASIAU3SHNCDUO4GBBUE4",
+  secretAccessKey: "QOv81NYKbVDmoz8+tzG17+z3fpgT7RaBmWp5GbPQ",
   sessionToken:
-    "FwoGZXIvYXdzEIT//////////wEaDOEsOS4AuezxguNZNyLPAfalTuyoJKZCPjAP5qota/iRUS45i11mwqm2Dyv76XUetfrlxhT/8kRxJZoQ2Dzfm0btC+zqRaX/Wqoma0+hn8j/77DDy2ftYMVDaAYjRXyFKB7ZN182ME1cXSMU6RhOcP9sGu3uRhy+OXIQeEhcF0fEQmhdrItyavlhSvYbQ3WRwjSRQ+Zy1XVNpS87ouyZCAWwpZQKIxZMct+6REsp4rDCQwlJbV++d1bsxiUDuk/LZcBdx0GztS8zymdqLr3ri3EtyX1puZ7W89caGo2uqSjFupqrBjItThSNjLjT1Ulm/Yi8toVfr5EIZ3OqhykJiPNoZsXwdSA4Iqxia2w8ittF4493",
+    "FwoGZXIvYXdzEFkaDHpb/kVPXA450V6lOiLPASTEpWzcjKxakwDkKwbD9cLVPRDVr7iUrciSiRT4Q01yqGZBOt/L6yn5oXRtK/eUM5ODWZcNP0aTt12Ftt/9wEWV8BMee8d9UwemiEtOTFltYdn0DO3+tJgZ+6zV2okNddcy3bOkU3o3LBwqg/3WCbSrVqrwvgQJMIp2vmWgmWQsQ4QBv6HRZijpW6z0BgrGxooWThIBQjMBY1ZS6T3EQsEG7IgBOUaSnRTGzcQZFlaZv/Osdj/K+LfnjylQ4e9cYLuxCVqpQ1ck50iXqEDpPCi2tsmrBjItKNnk1ahqjBklk4md8YHbbP3lqV34zeTaUhEFrPkWtjWQq/XlwG9PyfqofEW7",
   region: "us-east-1",
 });
 
 const s3 = new S3Client({
   region: "us-east-1",
   credentials: {
-    accessKeyId: "ASIAU3SHNCDUDI4V3CQ2",
-    secretAccessKey: "58Lmw79MhG5xl9SMoD5AXGjiAkCMWF+iQ2qGEsvo",
+    accessKeyId: "ASIAU3SHNCDUO4GBBUE4",
+    secretAccessKey: "QOv81NYKbVDmoz8+tzG17+z3fpgT7RaBmWp5GbPQ",
     sessionToken:
-      "FwoGZXIvYXdzEIT//////////wEaDOEsOS4AuezxguNZNyLPAfalTuyoJKZCPjAP5qota/iRUS45i11mwqm2Dyv76XUetfrlxhT/8kRxJZoQ2Dzfm0btC+zqRaX/Wqoma0+hn8j/77DDy2ftYMVDaAYjRXyFKB7ZN182ME1cXSMU6RhOcP9sGu3uRhy+OXIQeEhcF0fEQmhdrItyavlhSvYbQ3WRwjSRQ+Zy1XVNpS87ouyZCAWwpZQKIxZMct+6REsp4rDCQwlJbV++d1bsxiUDuk/LZcBdx0GztS8zymdqLr3ri3EtyX1puZ7W89caGo2uqSjFupqrBjItThSNjLjT1Ulm/Yi8toVfr5EIZ3OqhykJiPNoZsXwdSA4Iqxia2w8ittF4493",
+      "FwoGZXIvYXdzEFkaDHpb/kVPXA450V6lOiLPASTEpWzcjKxakwDkKwbD9cLVPRDVr7iUrciSiRT4Q01yqGZBOt/L6yn5oXRtK/eUM5ODWZcNP0aTt12Ftt/9wEWV8BMee8d9UwemiEtOTFltYdn0DO3+tJgZ+6zV2okNddcy3bOkU3o3LBwqg/3WCbSrVqrwvgQJMIp2vmWgmWQsQ4QBv6HRZijpW6z0BgrGxooWThIBQjMBY1ZS6T3EQsEG7IgBOUaSnRTGzcQZFlaZv/Osdj/K+LfnjylQ4e9cYLuxCVqpQ1ck50iXqEDpPCi2tsmrBjItKNnk1ahqjBklk4md8YHbbP3lqV34zeTaUhEFrPkWtjWQq/XlwG9PyfqofEW7",
   },
 });
 
